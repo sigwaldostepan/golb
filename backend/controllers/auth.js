@@ -1,8 +1,8 @@
-const prisma = require("../lib/prisma");
-const dotenv = require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { findUser, createUser } = require("./users");
+const prisma = require('../lib/prisma');
+const dotenv = require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { findUser, createUser } = require('./users');
 
 const register = async (req, res) => {
   try {
@@ -10,13 +10,11 @@ const register = async (req, res) => {
 
     const userExist = await findUser(username, email);
 
-    console.log(userExist);
-
     if (userExist)
       return res.status(409).json({
         payload: {
-          status: "error",
-          message: "User already exist",
+          status: 'error',
+          message: 'User already exist',
         },
       });
 
@@ -29,30 +27,29 @@ const register = async (req, res) => {
 
     return res.status(200).json({
       payload: {
-        status: "ok",
-        message: "User created",
+        status: 'ok',
+        message: 'User created',
         user,
       },
     });
   } catch (error) {
-    console.log("Error creating user:", error);
+    console.log('Error creating user:', error);
     return res.status(500).json({
       payload: {
-        status: "error",
-        message: "Internal server error",
+        status: 'error',
+        message: 'Internal server error',
       },
     });
   }
 };
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
-  console.log(req.body);
+  const { email, password } = req.body;
 
-  // check user by username
+  // check user by email
   const user = await prisma.user.findFirst({
     where: {
-      username,
+      email,
     },
   });
 
@@ -60,8 +57,8 @@ const login = async (req, res) => {
   if (!user)
     return res.status(404).json({
       payload: {
-        status: "error",
-        message: "User not found",
+        status: 'error',
+        message: 'User not found',
       },
     });
 
@@ -71,22 +68,22 @@ const login = async (req, res) => {
   if (!isPasswordCorrect)
     return res.status(400).json({
       payload: {
-        status: "error",
-        message: "Incorrect password",
+        status: 'error',
+        message: 'Incorrect password',
       },
     });
 
-  const token = jwt.sign(user.id, "jwtkey");
+  const token = jwt.sign(user.id, 'jwtkey');
 
-  res.cookie("accessToken", {
+  res.cookie('accessToken', {
     httpOnly: true,
     accessToken: token,
   });
 
   return res.status(200).send({
     payload: {
-      status: "ok",
-      message: "Login success",
+      status: 'ok',
+      message: 'Login success',
       user: {
         email: user.email,
         username: user.username,
@@ -97,12 +94,12 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
   return res
-    .clearCookie("accessToken")
+    .clearCookie('accessToken')
     .status(200)
     .json({
       payload: {
-        status: "ok",
-        message: "User logged out",
+        status: 'ok',
+        message: 'User logged out',
       },
     });
 };
