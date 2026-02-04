@@ -11,7 +11,7 @@ Golb is a simple blog website, where you can share your opinion with other by cr
 
 1. Clone this repository
    ```bash
-   git clone https://github.com/sigwaldostepan/project-doscom.git
+   git clone https://github.com/sigwaldostepan/golb.git
    ```
 2. Install dependencies
    ```bash
